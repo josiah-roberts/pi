@@ -20,21 +20,21 @@ let xorshiftRandom max =
     s1 <- s1 ^^^ s0
     s1 <- s1 ^^^ (s0 >>> 26)
     state1 <- s1
-    int((state0 + state1) % uint64(max))
+    (state0 + state1) % uint64(max) |> int
 
 let throw rng x =
     (rng x, rng x)
 
 let offsetFromCenter size x =
-    int64(x - size / 2) |> abs
+    int64(x - size / 2 |> abs)
 
-let distance size (coords: int*int) =
+let distance size coords =
     let dist = offsetFromCenter size
     match coords with
     | (x, y) -> ((dist x |> pown) 2) + ((dist y |> pown) 2) |> double |> sqrt
 
-let inside size (coords: int*int) =
-    distance size coords <= double size / double 2
+let inside size coords =
+    distance size coords <= double (size / 2)
 
 let rec pirec iterations size rng incount outcount =
     let tail = pirec iterations size rng
